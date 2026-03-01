@@ -9,11 +9,11 @@ import CarListing from "./CarListing.js";
 Brand.hasMany(CarModel, { foreignKey: "brandId" });
 CarModel.belongsTo(Brand, { foreignKey: "brandId" });
 
-CarModel.hasMany(CarSpecifications, { foreignKey: "carModelId" });
-CarSpecifications.belongsTo(CarModel, { foreignKey: "carModelId" });
+CarModel.hasMany(CarListing, { foreignKey: "carModelId" });
+CarListing.belongsTo(CarModel, { foreignKey: "carModelId" });
 
-CarSpecifications.hasMany(CarListing, { foreignKey: "carSpecificationsId" });
-CarListing.belongsTo(CarSpecifications, { foreignKey: "carSpecificationsId" });
+CarListing.hasOne(CarSpecifications, { foreignKey: "carListingId", as: "specs" });
+CarSpecifications.belongsTo(CarListing, { foreignKey: "carListingId", as: "listing" });
 
 User.hasMany(CarListing, { foreignKey: "userId" });
 CarListing.belongsTo(User, { foreignKey: "userId" });

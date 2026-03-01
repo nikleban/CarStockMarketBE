@@ -1,17 +1,12 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-import { VEHICLE_SHAPE_CHOICES } from "./const.js";
+import { VEHICLE_FUEL_TYPES } from "./const.js";
 
 const CarListing = sequelize.define("CarListing", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
-  },
-  vehicleShape: {
-    type: DataTypes.ENUM(...Object.values(VEHICLE_SHAPE_CHOICES)),
-    allowNull: false,
-    field: "vehicleShape",
   },
   price: {
     type: DataTypes.INTEGER,
@@ -21,10 +16,47 @@ const CarListing = sequelize.define("CarListing", {
       max: 5_000_000,
     },
   },
-  carSpecificationsId: {
+  kilowatts: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: { model: "CarSpecifications", key: "id" },
+  },
+  horsepower: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      const kw = this.getDataValue("kilowatts");
+      return kw ? Math.round(kw * 1.341) : null;
+    },
+  },
+  fuel: {
+    type: DataTypes.ENUM(...Object.values(VEHICLE_FUEL_TYPES)),
+    allowNull: false,
+    field: "fuel",
+  },
+  mileage: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    max: 2_000_000,
+  },
+  registrationYear: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    validate: {
+      min: 1886,
+      max: new Date().getFullYear() + 1,
+    },
+  },
+  registrationMonth: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    validate: {
+      min: 1,
+      max: 12,
+    },
+  },
+  carModelId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: { model: "CarModels", key: "id" },
     onDelete: "CASCADE",
   },
   userId: {

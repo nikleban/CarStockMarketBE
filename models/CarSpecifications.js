@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-import { VEHICLE_FUEL_TYPES } from "./const.js";
+import { VEHICLE_SHAPE_CHOICES } from "./const.js";
+
 
 const CarSpecifications = sequelize.define("CarSpecifications", {
   id: {
@@ -8,29 +9,69 @@ const CarSpecifications = sequelize.define("CarSpecifications", {
     autoIncrement: true,
     primaryKey: true,
   },
-  name: {
-    type: DataTypes.STRING,
-  },
-  kilowatts: {
-    type: DataTypes.INTEGER,
+  vehicleShape: {
+    type: DataTypes.ENUM(...Object.values(VEHICLE_SHAPE_CHOICES)),
     allowNull: false,
+    field: "vehicleShape",
   },
-  horsepower: {
-    type: DataTypes.VIRTUAL,
-    get() {
-      const kw = this.getDataValue("kilowatts");
-      return kw ? Math.round(kw * 1.341) : null;
+  color: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  numOfDoors: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    validate: {
+      min: 1,
+      max: 9,
     },
   },
-  fuel: {
-    type: DataTypes.ENUM(...Object.values(VEHICLE_FUEL_TYPES)),
-    allowNull: false,
-    field: "fuel",
+  numOfSeats: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    validate: {
+      min: 1,
+      max: 10,
+    },
   },
-  carModelId: {
+  photos: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false,
+  },
+  fuelConsumption: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: { model: "CarModels", key: "id" },
+  },
+  motorVolumeFrom: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  motorVolumeTo: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  vinNumber: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  numOfOwners: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      min: 0,
+      max: 20,
+    },
+  },
+  techincalValidity: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  carListingId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    unique: true,
+    references: { model: "CarListings", key: "id" },
     onDelete: "CASCADE",
   },
 });
