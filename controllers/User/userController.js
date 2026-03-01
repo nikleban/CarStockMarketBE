@@ -9,7 +9,7 @@ import { AppError } from "../../errors/index.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const registerUser = async (req, res) => {
+export const registerUser = async (req, res, next) => {
   try {
     const { firstName, lastName, email, telephone, password } = req.body;
 
@@ -52,11 +52,11 @@ export const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({ message: "Server error" });
+    next(error);
   }
 };
 
-export const loginUser = async (req, res) => {
+export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -94,9 +94,8 @@ export const loginUser = async (req, res) => {
         telephone: user.telephone,
       },
     });
-  } catch (e) {
-    console.log(e);
-    return res.status(500).json({ message: "Server error" });
+  } catch (error) {
+    next(error);
   }
 };
 

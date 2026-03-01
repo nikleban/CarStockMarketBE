@@ -5,8 +5,10 @@ import { sequelize } from "./models/index.js";
 import "source-map-support/register.js";
 import userRoutes from "./routes/userRoutes.js";
 import carRoutes from "./routes/carRoutes.js";
+import listingRoutes from "./routes/listingRoutes.js";
 import cookieParser from "cookie-parser";
 import protect from "./middlewares/AuthMiddleware.js";
+import errorHandler from "./middlewares/ErrorHandler.js";
 
 dotenv.config();
 
@@ -22,8 +24,11 @@ app.use(cookieParser());
 
 app.use("/api/users", userRoutes);
 app.use("/api/cars", protect, carRoutes);
+app.use("/api/listings", protect, listingRoutes);
 
 app.get("/", (req, res) => res.send("API running"));
+
+app.use(errorHandler);
 
 const startServer = async () => {
   try {
