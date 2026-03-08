@@ -2,18 +2,28 @@ import CarModel from "../../models/CarModel.js";
 import CarListing from "../../models/CarListing.js";
 import CarSpecifications from "../../models/CarSpecifications.js";
 import AppError from "../../errors/AppErrors.js";
+import Brand from "../../models/Brand.js";
 
 export const createCarListing = async (req, res, next) => {
     try {
-        const data = req.body.data;
+        const data = req.body;
+        const photos = req.files;
         const carModel = await CarModel.findOne({ where: { name: data.brandModel } });
 
         if (!carModel) {
             throw new AppError("Car model not found", 404);
         }
+
+        const carAlreadyExists = await CarSpecifications.findOne({where: { vinNumber: data.vinNumber }})
+
+        if(carAlreadyExists) {
+            throw new AppError("Car Already exists", 400);
+        }
+
         const carListing = await CarListing.create({
             price: data.price,
             kilowatts: data.kilowatts,
+            photos: photos,
             fuel: data.fuelType,
             mileage: data.mileage,
             registrationYear: data.registrationYear,
@@ -27,7 +37,6 @@ export const createCarListing = async (req, res, next) => {
             color: data.color,
             numOfDoors: data.numOfDoors,
             numOfSeats: data.numOfSeats,
-            photos: data.photos,
             fuelConsumption: data.fuelConsumption,
             motorVolumeFrom: data.motorVolumeFrom,
             motorVolumeTo: data.motorVolumeTo,
@@ -48,9 +57,46 @@ export const createCarListing = async (req, res, next) => {
 
 export const getCarListings = async (req, res, next) => {
     try {
-        const carListings = await CarListing.findAll({});
+        const page = req.query.page;
+        const limit = 10
+        const offset = (page - 1) * limit;
+
+        const carListings = await CarListing.findAll({
+            limit,
+            offset,
+            order: [["createdAt", "DESC"]],
+            include: [{
+                model: CarModel,
+                attributes: ["name"],
+                include: [{
+                    model: Brand,
+                    attributes: ["name"]
+                }]
+            }]
+        });
         return res.status(200).json(carListings);
     } catch (error) {
         return next(error);
     }
 };
+
+export const getCarListing = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const carListing = await CarListing.findByPk(id);
+        const carSpecifications = await CarSpecifications.findOne({ where: {
+            carListingId: id
+        }});
+
+        const carData = {
+            ...carListing.get(),
+            specifications: {
+                ...carSpecifications.get(),
+            }
+        };
+        return res.status(200).json(carData);
+    } catch (error) {
+        return next(error);
+    }
+}

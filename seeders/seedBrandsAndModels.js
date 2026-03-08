@@ -7,30 +7,88 @@ const carData = {
   Ford: ["Focus", "Mustang", "F-150"],
 };
 
-async function seedBrandsAndModels() {
-  try {
-    const brandNames = Object.keys(carData);
-    const brandRecords = brandNames.map((name) => ({ name }));
-    const brands = await Brand.bulkCreate(brandRecords);
+const BASE_URL = 'https://parseapi.back4app.com/classes/Car_Model_List';
+const HEADERS = {
+  'X-Parse-Application-Id': 'hlhoNKjOvEhqzcVAJ1lxjicJLZNVv36GdbboZj3Z',
+  'X-Parse-Master-Key': 'SNMJJF0CZZhTPhLDIqGhTlUNV9r60M2Z5spyWfXW',
+  'Accept': 'application/json',
+};
 
-    const carModels = [];
-    for (const brand of brands) {
-      const models = carData[brand.name];
-      for (const modelName of models) {
-        carModels.push({
-          name: modelName,
-          brandId: brand.id,
-        });
-      }
+async function seedBrandsAndModels() {
+  const rows = await fetchAllRows();
+  const makes = normalize(rows);
+
+  const brandRows = [...makes.keys()].map((name) => ({ name }));
+
+  await Brand.bulkCreate(brandRows, {
+    ignoreDuplicates: true,
+  });
+
+  const brands = await Brand.findAll({
+    attributes: ["id", "name"],
+  });
+
+  const brandIdByName = new Map(
+    brands.map((brand) => [brand.name, brand.id])
+  );
+  const modelRows = [];
+
+  for (const [makeName, modelSet] of makes) {
+    const brandId = brandIdByName.get(makeName);
+    if (!brandId) continue;
+
+    for (const modelName of modelSet) {
+      modelRows.push({
+        name: modelName,
+        brandId,
+      });
+    }
+  }
+  await CarModel.bulkCreate(modelRows, {
+    ignoreDuplicates: true,
+  });
+  console.log(`Seeded ${brandRows.length} brands and ${modelRows.length} models.`);
+}
+
+async function fetchAllRows() {
+  const limit = 1000;
+  let skip = 0;
+  const allRows = [];
+
+  while (true) {
+    const url = `${BASE_URL}?limit=${limit}&skip=${skip}&keys=Make,Model`;
+    const res = await fetch(url, { headers: HEADERS });
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} ${res.statusText}`);
     }
 
-    await CarModel.bulkCreate(carModels);
-    console.log("✅ Brands and car models seeded successfully!");
-    process.exit(0);
-  } catch (error) {
-    console.error("❌ Error seeding data:", error);
-    process.exit(1);
+    const data = await res.json();
+    const rows = data.results || [];
+
+    allRows.push(...rows);
+
+    console.log(`Fetched ${rows.length} rows at skip=${skip}`);
+
+    if (rows.length < limit) break;
+    skip += limit;
   }
+
+  return allRows;
+}
+
+function normalize(rows) {
+  const makes = new Map();
+
+  for (const row of rows) {
+    const make = row.Make?.trim();
+    const model = row.Model?.trim();
+    if (!make || !model) continue;
+
+    if (!makes.has(make)) makes.set(make, new Set());
+    makes.get(make).add(model);
+  }
+  return makes;
 }
 
 seedBrandsAndModels();

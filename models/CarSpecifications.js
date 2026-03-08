@@ -34,10 +34,6 @@ const CarSpecifications = sequelize.define("CarSpecifications", {
       max: 10,
     },
   },
-  photos: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: false,
-  },
   fuelConsumption: {
     type: DataTypes.INTEGER,
     allowNull: false,
