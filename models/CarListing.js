@@ -45,6 +45,10 @@ const CarListing = sequelize.define("CarListing", {
       max: new Date().getFullYear() + 1,
     },
   },
+  photos: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false,
+  },
   registrationMonth: {
     type: DataTypes.INTEGER,
     allowNull: true,

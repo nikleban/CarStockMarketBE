@@ -25,6 +25,8 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes);
 app.use("/api/cars", protect, carRoutes);
 app.use("/api/listings", protect, listingRoutes);
+app.use("/uploads", express.static("uploads"));
+
 
 app.get("/", (req, res) => res.send("API running"));
 
