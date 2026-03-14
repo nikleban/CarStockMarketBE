@@ -2,7 +2,7 @@ import express from "express";
 import {
   getCarBrands,
   getBrandModels,
-} from "../controllers/Car/brandController.js";
+} from "#/controllers/Car/brandController.js";
 
 const router = express.Router();
 

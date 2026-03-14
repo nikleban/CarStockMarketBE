@@ -1,14 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { sequelize } from "./models/index.js";
+import { sequelize } from "#/models/index.js";
 import "source-map-support/register.js";
-import userRoutes from "./routes/userRoutes.js";
-import carRoutes from "./routes/carRoutes.js";
-import listingRoutes from "./routes/listingRoutes.js";
+import userRoutes from "#/routes/userRoutes.js";
+import carRoutes from "#/routes/carRoutes.js";
+import listingRoutes from "#/routes/listingRoutes.js";
 import cookieParser from "cookie-parser";
-import protect from "./middlewares/AuthMiddleware.js";
-import errorHandler from "./middlewares/ErrorHandler.js";
+import protect from "#/middlewares/AuthMiddleware.js";
+import errorHandler from "#/middlewares/ErrorHandler.js";
 
 dotenv.config();
 

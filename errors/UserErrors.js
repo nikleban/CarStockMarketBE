@@ -1,4 +1,4 @@
-import AppError from "./AppErrors.js";
+import AppError from "#/errors/AppErrors.js";
 
 export class MissingUserDataError extends AppError {
   constructor() {

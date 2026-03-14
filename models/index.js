@@ -1,10 +1,10 @@
-import sequelize from "../config/db.js";
+import sequelize from "#/config/db.js";
 
-import Brand from "./Brand.js";
-import User from "./User.js";
-import CarModel from "./CarModel.js";
-import CarSpecifications from "./CarSpecifications.js";
-import CarListing from "./CarListing.js";
+import Brand from "#/models/Brand.js";
+import User from "#/models/User.js";
+import CarModel from "#/models/CarModel.js";
+import CarSpecifications from "#/models/CarSpecifications.js";
+import CarListing from "#/models/CarListing.js";
 
 Brand.hasMany(CarModel, { foreignKey: "brandId" });
 CarModel.belongsTo(Brand, { foreignKey: "brandId" });
