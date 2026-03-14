@@ -57,6 +57,13 @@ const CarListing = sequelize.define("CarListing", {
       max: 12,
     },
   },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    validate: {
+      max: 500,
+    }
+  },
   carModelId: {
     type: DataTypes.INTEGER,
     allowNull: false,

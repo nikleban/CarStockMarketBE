@@ -1,5 +1,6 @@
 import CarModel from "../../models/CarModel.js";
 import CarListing from "../../models/CarListing.js";
+import User from "../../models/User.js";
 import CarSpecifications from "../../models/CarSpecifications.js";
 import AppError from "../../errors/AppErrors.js";
 import Brand from "../../models/Brand.js";
@@ -28,6 +29,7 @@ export const createCarListing = async (req, res, next) => {
             mileage: data.mileage,
             registrationYear: data.registrationYear,
             registrationMonth: data.registrationMonth,
+            description: data.description,
             userId: data.userId,
             carModelId: carModel.id,
         });
@@ -92,11 +94,49 @@ export const getCarListing = async (req, res, next) => {
         const carData = {
             ...carListing.get(),
             specifications: {
-                ...carSpecifications.get(),
+                vehicleShape: carSpecifications.get().vehicleShape,
+                color: carSpecifications.get().color,
+                numOfDoors: carSpecifications.get().numOfDoors,
+                numOfSeats: carSpecifications.get().numOfSeats,
+                fuelConsumption: carSpecifications.get().fuelConsumption,
+                motorVolumeFrom: carSpecifications.get().motorVolumeFrom,
+                motorVolumeTo: carSpecifications.get().motorVolumeTo,
+                vinNumber: carSpecifications.get().vinNumber,
+                numOfOwners: carSpecifications.get().numOfOwners,
+                techincalValidity: carSpecifications.get().techincalValidity,
             }
         };
         return res.status(200).json(carData);
     } catch (error) {
         return next(error);
     }
-}
+};
+
+export const getSellerData = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const carListing = await CarListing.findByPk(id);
+        const userId = carListing.userId;
+        const user = await User.findByPk(userId);
+        
+        const userListingsCount = await CarListing.count({
+            where: {
+                userId: userId
+            }
+        });
+        
+        const accountAge = user.createdAt.getFullYear();
+
+        const sellerData = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            accountAge: accountAge,
+            numOfListings: userListingsCount,
+        }
+
+        return res.status(200).json(sellerData);
+    } catch (error) {
+        return next(error);
+    }
+};
