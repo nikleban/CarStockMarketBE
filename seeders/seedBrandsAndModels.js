@@ -1,5 +1,5 @@
-import Brand from "../models/Brand.js";
-import CarModel from "../models/CarModel.js";
+import Brand from "#/models/Brand.js";
+import CarModel from "#/models/CarModel.js";
 
 const carData = {
   Toyota: ["Corolla", "Camry", "RAV4"],

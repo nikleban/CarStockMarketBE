@@ -32,6 +32,9 @@ importers:
       lint-staged:
         specifier: ^16.2.7
         version: 16.2.7
+      module-alias:
+        specifier: ^2.3.4
+        version: 2.3.4
       multer:
         specifier: ^2.1.1
         version: 2.1.1
@@ -446,6 +449,9 @@ packages:
 
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
+
+  module-alias@2.3.4:
+    resolution: {integrity: sha512-bOclZt8hkpuGgSSoG07PKmvzTizROilUTvLNyrMqvlC9snhs7y7GzjNWAVbISIOlhCP1T14rH1PDAV9iNyBq/w==}
 
   moment-timezone@0.5.48:
     resolution: {integrity: sha512-f22b8LV1gbTO2ms2j2z13MuPogNoh5UzxL3nzNAYKGraILnbGc9NEE6dyiiiLv46DGRb8A4kg8UKWLjPthxBHw==}
@@ -1232,6 +1238,8 @@ snapshots:
   minimatch@3.1.2:
     dependencies:
       brace-expansion: 1.1.12
+
+  module-alias@2.3.4: {}
 
   moment-timezone@0.5.48:
     dependencies:

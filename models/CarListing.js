@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
-import { VEHICLE_FUEL_TYPES } from "./const.js";
+import sequelize from "#/config/db.js";
+import { VEHICLE_FUEL_TYPES } from "#/models/const.js";
 
 const CarListing = sequelize.define("CarListing", {
   id: {

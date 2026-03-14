@@ -1,9 +1,9 @@
-import CarModel from "../../models/CarModel.js";
-import CarListing from "../../models/CarListing.js";
-import User from "../../models/User.js";
-import CarSpecifications from "../../models/CarSpecifications.js";
-import AppError from "../../errors/AppErrors.js";
-import Brand from "../../models/Brand.js";
+import CarModel from "#/models/CarModel.js";
+import CarListing from "#/models/CarListing.js";
+import User from "#/models/User.js";
+import CarSpecifications from "#/models/CarSpecifications.js";
+import AppError from "#/errors/AppErrors.js";
+import Brand from "#/models/Brand.js";
 
 export const createCarListing = async (req, res, next) => {
     try {

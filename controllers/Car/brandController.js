@@ -1,6 +1,6 @@
-import Brand from "../../models/Brand.js";
-import CarModel from "../../models/CarModel.js";
-import { BrandNotFoundError } from "../../errors/index.js";
+import Brand from "#/models/Brand.js";
+import CarModel from "#/models/CarModel.js";
+import { BrandNotFoundError } from "#/errors/index.js";
 
 export const getCarBrands = async (req, res, next) => {
   try {

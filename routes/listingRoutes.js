@@ -1,6 +1,6 @@
 import express from "express";
-import upload from "../middlewares/MulterUpload.js"
-import { createCarListing, getCarListings, getCarListing, getSellerData } from "../controllers/CarListing/CarListingController.js";
+import upload from "#/middlewares/MulterUpload.js"
+import { createCarListing, getCarListings, getCarListing, getSellerData } from "#/controllers/CarListing/CarListingController.js";
 
 const router = express.Router();
 

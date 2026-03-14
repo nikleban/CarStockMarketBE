@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
-import User from "../../models/User.js";
+import User from "#/models/User.js";
 import {
   MissingUserDataError,
   UserAlreadyExistsError,
-} from "../../errors/index.js";
+} from "#/errors/index.js";
 import jwt from "jsonwebtoken";
-import { AppError } from "../../errors/index.js";
+import { AppError } from "#/errors/index.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
