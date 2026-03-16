@@ -59,7 +59,7 @@ const CarSpecifications = sequelize.define("CarSpecifications", {
       max: 20,
     },
   },
-  techincalValidity: {
+  technicalValidity: {
     type: DataTypes.DATE,
     allowNull: true,
   },
