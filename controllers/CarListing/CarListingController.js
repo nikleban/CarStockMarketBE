@@ -20,7 +20,8 @@ export const createCarListing = async (req, res, next) => {
         if(carAlreadyExists) {
             throw new AppError("Car Already exists", 400);
         }
-
+        console.log(data.technicalValidityDate);
+        console.log(data);
         const carListing = await CarListing.create({
             price: data.price,
             kilowatts: data.kilowatts,
@@ -44,7 +45,7 @@ export const createCarListing = async (req, res, next) => {
             motorVolumeTo: data.motorVolumeTo,
             vinNumber: data.vinNumber,
             numOfOwners: data.numberOfOwners,
-            techincalValidity: data.techincalValidity,
+            technicalValidity: data.technicalValidityDate,
             carListingId: carListing.id,
         });
 
@@ -53,6 +54,7 @@ export const createCarListing = async (req, res, next) => {
             received: req.body,
         });
     } catch (error) {
+        console.log(error)
         return next(error);
     }
 };
