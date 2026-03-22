@@ -4,8 +4,11 @@ import User from "#/models/User.js";
 import CarSpecifications from "#/models/CarSpecifications.js";
 import AppError from "#/errors/AppErrors.js";
 import Brand from "#/models/Brand.js";
+import sequelize from "#/config/db.js";
+import CarListingLike from "#/models/CarListingLike.js";
 
 export const createCarListing = async (req, res, next) => {
+    const transaction = await sequelize.transaction();
     try {
         const data = req.body;
         const photos = req.files;
@@ -20,8 +23,7 @@ export const createCarListing = async (req, res, next) => {
         if(carAlreadyExists) {
             throw new AppError("Car Already exists", 400);
         }
-        console.log(data.technicalValidityDate);
-        console.log(data);
+
         const carListing = await CarListing.create({
             price: data.price,
             kilowatts: data.kilowatts,
@@ -33,7 +35,9 @@ export const createCarListing = async (req, res, next) => {
             description: data.description,
             userId: data.userId,
             carModelId: carModel.id,
-        });
+            },
+            { transaction }
+        );
         
         await CarSpecifications.create({
             vehicleShape: data.vehicleShape,
@@ -47,14 +51,16 @@ export const createCarListing = async (req, res, next) => {
             numOfOwners: data.numberOfOwners,
             technicalValidity: data.technicalValidityDate,
             carListingId: carListing.id,
-        });
+            },
+            { transaction }
+        );
+        await transaction.commit();
 
         return res.status(201).json({
             ok: true,
             received: req.body,
         });
     } catch (error) {
-        console.log(error)
         return next(error);
     }
 };
@@ -64,6 +70,8 @@ export const getCarListings = async (req, res, next) => {
         const page = req.query.page;
         const limit = 10
         const offset = (page - 1) * limit;
+        
+        const userId = req.user.id;
 
         const carListings = await CarListing.findAll({
             limit,
@@ -75,10 +83,26 @@ export const getCarListings = async (req, res, next) => {
                 include: [{
                     model: Brand,
                     attributes: ["name"]
-                }]
+                }],
+            },
+            {
+                model: CarListingLike,
+                as: "liked",
+                where: { userId: userId },
+                required: false
             }]
         });
-        return res.status(200).json(carListings);
+        
+        const formatted = carListings.map((listing) => {
+            const json = listing.toJSON();
+
+            return {
+                ...json,
+                liked: json.likes?.length > 0
+            };
+        });
+
+        return res.status(200).json(formatted);
     } catch (error) {
         return next(error);
     }
@@ -89,9 +113,17 @@ export const getCarListing = async (req, res, next) => {
         const { id } = req.params;
 
         const carListing = await CarListing.findByPk(id);
+
+        if (!carListing){
+            throw new AppError("Car Listing doesnt exist");
+        }
         const carSpecifications = await CarSpecifications.findOne({ where: {
             carListingId: id
         }});
+
+        if (!carSpecifications) {
+            throw new AppError("Car specifications dont exist");
+        }
 
         const carData = {
             ...carListing.get(),
@@ -105,7 +137,7 @@ export const getCarListing = async (req, res, next) => {
                 motorVolumeTo: carSpecifications.get().motorVolumeTo,
                 vinNumber: carSpecifications.get().vinNumber,
                 numOfOwners: carSpecifications.get().numOfOwners,
-                techincalValidity: carSpecifications.get().techincalValidity,
+                techincalValidity: carSpecifications.get().technicalValidity,
             }
         };
         return res.status(200).json(carData);

@@ -32,6 +32,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    soldCars: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   },
   { timestamps: true },
 );
