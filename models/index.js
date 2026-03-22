@@ -5,6 +5,7 @@ import User from "#/models/User.js";
 import CarModel from "#/models/CarModel.js";
 import CarSpecifications from "#/models/CarSpecifications.js";
 import CarListing from "#/models/CarListing.js";
+import CarListingLike from "#/models/CarListingLike.js";
 
 Brand.hasMany(CarModel, { foreignKey: "brandId" });
 CarModel.belongsTo(Brand, { foreignKey: "brandId" });
@@ -17,5 +18,12 @@ CarSpecifications.belongsTo(CarListing, { foreignKey: "carListingId", as: "listi
 
 User.hasMany(CarListing, { foreignKey: "userId" });
 CarListing.belongsTo(User, { foreignKey: "userId" });
+
+
+CarListingLike.belongsTo(User, { foreignKey: "userId" })
+CarListingLike.belongsTo(CarListing, { foreignKey: "carListingId" })
+
+User.hasMany(CarListingLike, { foreignKey: "userId" });
+CarListing.hasMany(CarListingLike, { foreignKey: "carListingId", as: "liked" });
 
 export { sequelize, Brand, User, CarModel, CarSpecifications, CarListing };

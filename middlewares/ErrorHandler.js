@@ -1,6 +1,6 @@
 export default function errorHandler(err, req, res, next) {
   const statusCode = err.statusCode || 500;
-
+  console.log(err);
   const isAuthRoute =
     req.originalUrl.startsWith("/api/users") &&
     (req.originalUrl.includes("login") || req.originalUrl.includes("register"));
