@@ -5,6 +5,7 @@ import {
   UserAlreadyExistsError,
 } from "#/errors/index.js";
 import jwt from "jsonwebtoken";
+import CarListing from "../../models/CarListing.js";
 import { AppError } from "#/errors/index.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -120,3 +121,36 @@ export const logoutUser = async (req, res) => {
   res.clearCookie("token");
   res.json({ message: "User logged out successfully" });
 };
+
+export const getUser = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const currentUserId = req.user.id;
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      throw UserDoesntExist();
+    }
+
+    const carListingsMade = await CarListing.count({ where: { userId: userId } })
+    const userActiveYear = user.createdAt.getFullYear();
+
+    if (userId !== currentUserId) {
+      //return limited data, private data stays
+    }
+    
+
+    return res.status(201).json({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        telephone: user.telephone,
+        soldCars: user.soldCars,
+        activeListings: carListingsMade,
+        activeSinceYear: userActiveYear,
+      });
+  } catch (error) {
+    next(error);
+  }
+}
