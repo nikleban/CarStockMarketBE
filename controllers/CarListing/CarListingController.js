@@ -92,13 +92,13 @@ export const getCarListings = async (req, res, next) => {
                 required: false
             }]
         });
-        
+
         const formatted = carListings.map((listing) => {
             const json = listing.toJSON();
 
             return {
                 ...json,
-                liked: json.likes?.length > 0
+                liked: json.liked?.length > 0
             };
         });
 
@@ -111,6 +111,7 @@ export const getCarListings = async (req, res, next) => {
 export const getCarListing = async (req, res, next) => {
     try {
         const { id } = req.params;
+        const userId = req.user.id;
 
         const carListing = await CarListing.findByPk(id);
 
@@ -124,7 +125,9 @@ export const getCarListing = async (req, res, next) => {
         if (!carSpecifications) {
             throw new AppError("Car specifications dont exist");
         }
-
+        
+        const isLiked = await CarListingLike.count({where: { userId: userId, carListingId: carListing.id }});
+        console.log(isLiked);
         const carData = {
             ...carListing.get(),
             specifications: {
@@ -138,7 +141,8 @@ export const getCarListing = async (req, res, next) => {
                 vinNumber: carSpecifications.get().vinNumber,
                 numOfOwners: carSpecifications.get().numOfOwners,
                 techincalValidity: carSpecifications.get().technicalValidity,
-            }
+            },
+            liked: isLiked > 0,
         };
         return res.status(200).json(carData);
     } catch (error) {
