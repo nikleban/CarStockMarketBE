@@ -7,6 +7,10 @@ import {
 import jwt from "jsonwebtoken";
 import CarListing from "../../models/CarListing.js";
 import { AppError } from "#/errors/index.js";
+import CarListingLike from "#/models/CarListingLike.js";
+import Brand from "#/models/Brand.js";
+import CarModel from "#/models/CarModel.js";
+import { literal } from "sequelize";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -139,7 +143,8 @@ export const getUser = async (req, res, next) => {
       //return limited data, private data stays
     }
     
-
+    const totalLikes = await CarListingLike.count({where: { userId: user.id }});
+    
     return res.status(201).json({
         id: user.id,
         firstName: user.firstName,
@@ -149,8 +154,115 @@ export const getUser = async (req, res, next) => {
         soldCars: user.soldCars,
         activeListings: carListingsMade,
         activeSinceYear: userActiveYear,
+        totalLikes: totalLikes,
       });
   } catch (error) {
+    next(error);
+  }
+}
+
+export const getUserCarListings = async (req, res, next) => {
+  const { id: userId } = req.params;
+  try {
+    const carListings = await CarListing.findAll({
+      where: {userId: userId},
+      attributes: {
+        include: [
+          [
+            literal(`(
+              SELECT COUNT(*)
+              FROM "CarListingLikes" AS cl
+              WHERE cl."carListingId" = "CarListing"."id"
+            )`),
+            "likes"
+          ]
+        ],
+      },
+      include: [{
+          model: CarModel,
+          attributes: ["name"],
+          include: [{
+              model: Brand,
+              attributes: ["name"]
+          }],
+      },]
+    })
+
+    const formatted = carListings.map((listing) => {
+      const json = listing.toJSON();
+      return {
+        id: listing.id,
+        brand: json.CarModel.Brand.name,
+        model: json.CarModel.name,  
+        createdAt: listing.createdAt,
+        description: listing.description,
+        fuel: listing.fuel,
+        horsepower: listing.horsepower,
+        kilowatts: listing.kilowatts,
+        mileage: listing.mileage,
+        photos: listing.photos,
+        price: listing.price,
+        registrationMonth: listing.registrationMonth,
+        registrationYear: listing.registrationYear,
+        likes: json.likes,
+      };
+    })
+
+    return res.status(201).json(formatted);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+}
+
+export const getUserLikedCarListings = async (req, res, next) => {
+  const { id: userId } = req.params;
+  try {
+    const likedCarListingIds = await CarListingLike.findAll({
+        where: { userId },
+        attributes: ['carListingId'],
+        raw: true,
+      });
+
+    const ids = likedCarListingIds.map((row) => row.carListingId);
+    
+    const carListings = await CarListing.findAll({
+      where: {
+        id: ids,
+      },
+      include: [{
+          model: CarModel,
+          attributes: ["name"],
+          include: [{
+              model: Brand,
+              attributes: ["name"]
+          }],
+      },]
+    });
+
+    const formatted = carListings.map((listing) => {
+      const json = listing.toJSON();
+      return {
+        id: listing.id,
+        brand: json.CarModel.Brand.name,
+        model: json.CarModel.name,  
+        createdAt: listing.createdAt,
+        description: listing.description,
+        fuel: listing.fuel,
+        horsepower: listing.horsepower,
+        kilowatts: listing.kilowatts,
+        mileage: listing.mileage,
+        photos: listing.photos,
+        price: listing.price,
+        registrationMonth: listing.registrationMonth,
+        registrationYear: listing.registrationYear,
+        liked: true,
+      };
+    })
+
+    return res.status(201).json(formatted);
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 }
