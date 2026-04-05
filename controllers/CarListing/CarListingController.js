@@ -3,7 +3,7 @@ import CarListing from "#/models/CarListing.js";
 import User from "#/models/User.js";
 import CarSpecifications from "#/models/CarSpecifications.js";
 import AppError from "#/errors/AppErrors.js";
-import Brand from "#/models/Brand.js";
+import { getCarListingsService } from "#/services/carListingService.js";
 import sequelize from "#/config/db.js";
 import CarListingLike from "#/models/CarListingLike.js";
 
@@ -67,42 +67,8 @@ export const createCarListing = async (req, res, next) => {
 
 export const getCarListings = async (req, res, next) => {
     try {
-        const page = req.query.page;
-        const limit = 10
-        const offset = (page - 1) * limit;
-        
-        const userId = req.user.id;
-
-        const carListings = await CarListing.findAll({
-            limit,
-            offset,
-            order: [["createdAt", "DESC"]],
-            include: [{
-                model: CarModel,
-                attributes: ["name"],
-                include: [{
-                    model: Brand,
-                    attributes: ["name"]
-                }],
-            },
-            {
-                model: CarListingLike,
-                as: "liked",
-                where: { userId: userId },
-                required: false
-            }]
-        });
-
-        const formatted = carListings.map((listing) => {
-            const json = listing.toJSON();
-
-            return {
-                ...json,
-                liked: json.liked?.length > 0
-            };
-        });
-
-        return res.status(200).json(formatted);
+        const carListings = await getCarListingsService({ query: req.query, user: req.user });
+        return res.status(200).json(carListings);
     } catch (error) {
         return next(error);
     }
