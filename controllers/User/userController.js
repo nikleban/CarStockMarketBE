@@ -16,6 +16,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export const registerUser = async (req, res, next) => {
   try {
+    console.log("what")
     const { firstName, lastName, email, telephone, password } = req.body;
 
     if (!firstName || !lastName || !email || !telephone || !password) {
