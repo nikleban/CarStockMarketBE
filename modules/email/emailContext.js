@@ -1,13 +1,11 @@
 class BaseEmailContext {
-
-    constructor(context) { 
-        this.context = context;
-    }
-};
-
+  constructor(context) {
+    this.context = context;
+  }
+}
 
 export class LoginEmailContext extends BaseEmailContext {
-  constructor({userName, loginPageLink}) {
+  constructor({ userName, loginPageLink }) {
     super({
       userName,
       loginPageLink,

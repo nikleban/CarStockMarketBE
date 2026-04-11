@@ -1,10 +1,10 @@
-import { Worker } from "bullmq";
-import EmailService from "#/modules/email/emailService.js";
-import { LoginEmailContext } from "#/modules/email/emailContext.js";
-import { loginTemplate } from "#/modules/email/templates/login.template.js";
+import { Worker } from 'bullmq';
+import EmailService from '#/modules/email/emailService.js';
+import { LoginEmailContext } from '#/modules/email/emailContext.js';
+import { loginTemplate } from '#/modules/email/templates/login.template.js';
 
 const redisConnection = {
-  host: process.env.REDIS_HOST || "localhost",
+  host: process.env.REDIS_HOST || 'localhost',
   port: process.env.REDIS_PORT || 6379,
 };
 
@@ -14,14 +14,15 @@ const emailService = new EmailService();
 // To add a new email: create its template + context, then add an entry here.
 const emailHandlers = {
   login: {
-    subject: "Successful login",
+    subject: 'Successful login',
     template: loginTemplate,
-    buildContext: (data) => new LoginEmailContext({ userName: data.userName, loginPageLink: "nekipeki" }),
+    buildContext: (data) =>
+      new LoginEmailContext({ userName: data.userName, loginPageLink: 'nekipeki' }),
   },
 };
 
 const emailWorker = new Worker(
-  "email",
+  'email',
   async (job) => {
     const { type, to, ...data } = job.data;
 
@@ -31,16 +32,21 @@ const emailWorker = new Worker(
     }
 
     const context = handler.buildContext(data);
-    await emailService.sendEmail({ to, subject: handler.subject, template: handler.template, context });
+    await emailService.sendEmail({
+      to,
+      subject: handler.subject,
+      template: handler.template,
+      context,
+    });
   },
   { connection: redisConnection }
 );
 
-emailWorker.on("completed", (job) => {
+emailWorker.on('completed', (job) => {
   console.log(`Email job ${job.id} completed`);
 });
 
-emailWorker.on("failed", (job, error) => {
+emailWorker.on('failed', (job, error) => {
   console.error(`Email job ${job.id} failed:`, error.message);
 });
 

@@ -50,7 +50,7 @@
     "prettier": "3.7.4"
   },
   "lint-staged": {
-    "*.js": [
+    "!(coverage|node_modules|uploads)/**/*.js": [
       "eslint --fix",
       "prettier --write"
     ],

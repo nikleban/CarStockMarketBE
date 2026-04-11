@@ -1,4 +1,4 @@
-import { baseTemplate } from "#/modules/email/templates/base.template.js";
+import { baseTemplate } from '#/modules/email/templates/base.template.js';
 
 export function loginTemplate({ userName, loginPageLink }) {
   const content = `

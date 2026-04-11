@@ -1,10 +1,10 @@
-import { Queue } from "bullmq";
+import { Queue } from 'bullmq';
 
 const redisConnection = {
-  host: process.env.REDIS_HOST || "localhost",
+  host: process.env.REDIS_HOST || 'localhost',
   port: process.env.REDIS_PORT || 6379,
 };
 
-const emailQueue = new Queue("email", { connection: redisConnection });
+const emailQueue = new Queue('email', { connection: redisConnection });
 
 export default emailQueue;

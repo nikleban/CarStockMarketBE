@@ -1,10 +1,10 @@
-import { faker } from "@faker-js/faker";
-import CarListing from "#/models/CarListing.js";
-import CarSpecifications from "#/models/CarSpecifications.js";
-import CarModel from "#/models/CarModel.js";
-import Brand from "#/models/Brand.js";
-import User from "#/models/User.js";
-import { VEHICLE_FUEL_TYPES, VEHICLE_SHAPE_CHOICES } from "#/models/const.js";
+import { faker } from '@faker-js/faker';
+import CarListing from '#/models/CarListing.js';
+import CarSpecifications from '#/models/CarSpecifications.js';
+import CarModel from '#/models/CarModel.js';
+import Brand from '#/models/Brand.js';
+import User from '#/models/User.js';
+import { VEHICLE_FUEL_TYPES, VEHICLE_SHAPE_CHOICES } from '#/models/const.js';
 
 const fuelTypes = Object.values(VEHICLE_FUEL_TYPES);
 const vehicleShapes = Object.values(VEHICLE_SHAPE_CHOICES);

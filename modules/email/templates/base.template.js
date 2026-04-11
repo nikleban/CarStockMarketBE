@@ -1,4 +1,4 @@
-export function baseTemplate({ content, title = "Car Stock Market" }) {
+export function baseTemplate({ content, title = 'Car Stock Market' }) {
   return `
   <!DOCTYPE html>
   <html>
