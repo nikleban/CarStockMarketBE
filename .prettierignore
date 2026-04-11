@@ -1,0 +1,4 @@
+node_modules
+coverage
+uploads
+pnpm-lock.yaml
