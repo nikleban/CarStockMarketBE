@@ -11,6 +11,7 @@ import CarListingLike from "#/models/CarListingLike.js";
 import Brand from "#/models/Brand.js";
 import CarModel from "#/models/CarModel.js";
 import { literal } from "sequelize";
+import emailQueue from "#/modules/email/emailQueue.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -89,6 +90,8 @@ export const loginUser = async (req, res, next) => {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+    
+    await emailQueue.add("login", { type: "login", to: user.email, userName: user.firstName });
 
     return res.status(201).json({
       message: "User loged in successfully",
