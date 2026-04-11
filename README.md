@@ -235,3 +235,23 @@ All protected routes require a valid `token` cookie (set automatically on login/
 | `pnpm dev` | Start with nodemon (auto-restart on change) |
 | `pnpm start` | Start in production mode |
 | `pnpm format` | Format all files with Prettier |
+
+
+## Testing
+
+> **First-time setup:** The `postgres_test` database is created automatically when the Docker container first starts. If you already have the volume from before, recreate it once:
+> ```bash
+> docker compose down -v && docker compose up
+> ```
+
+| Command | Description |
+|---|---|
+| `pnpm test` | Run all tests |
+| `pnpm test -- tests/services` | Run tests in a specific folder |
+| `pnpm test:coverage` | Run all tests with coverage report |
+
+To open the HTML coverage report in the browser after running `pnpm test:coverage`:
+
+```bash
+open coverage/lcov-report/index.html
+```
