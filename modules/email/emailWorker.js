@@ -1,7 +1,8 @@
 import { Worker } from 'bullmq';
 import EmailService from '#/modules/email/emailService.js';
-import { LoginEmailContext } from '#/modules/email/emailContext.js';
+import { LoginEmailContext, VerificationCodeContext } from '#/modules/email/emailContext.js';
 import { loginTemplate } from '#/modules/email/templates/login.template.js';
+import { verificationCodeTemplate } from '#/modules/email/templates/verificationCode.template.js';
 
 const redisConnection = {
   host: process.env.REDIS_HOST || 'localhost',
@@ -18,6 +19,15 @@ const emailHandlers = {
     template: loginTemplate,
     buildContext: (data) =>
       new LoginEmailContext({ userName: data.userName, loginPageLink: 'nekipeki' }),
+  },
+  verificationCode: {
+    subject: 'Car Stock Market',
+    template: verificationCodeTemplate,
+    buildContext: (data) =>
+      new VerificationCodeContext({
+        userName: data.userName,
+        verificationCode: data.verificationCode,
+      }),
   },
 };
 

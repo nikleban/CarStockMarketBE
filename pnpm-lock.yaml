@@ -32,6 +32,9 @@ importers:
       express:
         specifier: ^5.1.0
         version: 5.2.1
+      ioredis:
+        specifier: ^5.10.1
+        version: 5.10.1
       jest:
         specifier: ^30.3.0
         version: 30.3.0(@types/node@25.1.0)
