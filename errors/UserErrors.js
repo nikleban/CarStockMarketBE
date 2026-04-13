@@ -1,8 +1,8 @@
-import AppError from "#/errors/AppErrors.js";
+import AppError from '#/errors/AppErrors.js';
 
 export class MissingUserDataError extends AppError {
   constructor() {
-    super("Missing user data", 400);
+    super('Missing user data', 400);
   }
 }
 
@@ -15,5 +15,11 @@ export class UserAlreadyExistsError extends AppError {
 export class UserDoesntExist extends AppError {
   constructor() {
     super(`User doesnt exist`, 409);
+  }
+}
+
+export class InvalidVerificationCodeError extends AppError {
+  constructor() {
+    super('Invalid or expired verification code', 400);
   }
 }

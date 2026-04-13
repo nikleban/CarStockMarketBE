@@ -12,3 +12,12 @@ export class LoginEmailContext extends BaseEmailContext {
     });
   }
 }
+
+export class VerificationCodeContext extends BaseEmailContext {
+  constructor({ userName, verificationCode }) {
+    super({
+      userName,
+      verificationCode,
+    });
+  }
+}
