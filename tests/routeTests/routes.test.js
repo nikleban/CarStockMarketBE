@@ -1,5 +1,10 @@
 import request from 'supertest';
 import app from '#/app.js';
+import { sequelize } from '#/models/index.js';
+
+afterAll(async () => {
+  await sequelize.close();
+});
 
 describe('GET /', () => {
   it('should return API running', async () => {

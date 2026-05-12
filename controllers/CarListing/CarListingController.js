@@ -7,7 +7,7 @@ import {
 
 export const createCarListing = async (req, res, next) => {
   try {
-    await createCarListingService({ data: req.body, photos: req.files });
+    await createCarListingService({ data: req.body, photos: req.files, userId: req.user.id });
     return res.status(201).json({
       ok: true,
       received: req.body,
@@ -19,7 +19,7 @@ export const createCarListing = async (req, res, next) => {
 
 export const getCarListings = async (req, res, next) => {
   try {
-    const carListings = await getCarListingsService({ query: req.query, user: req.user });
+    const carListings = await getCarListingsService({ query: req.query, userId: req.user.id });
     return res.status(200).json(carListings);
   } catch (error) {
     return next(error);

@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import { sequelize } from "#/models/index.js";
 import "source-map-support/register.js";
 import app from "#/app.js";
+import "#/modules/email/emailWorker.js";
 
 dotenv.config({ quiet: true });
 

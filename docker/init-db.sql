@@ -1,2 +1,4 @@
-SELECT 'CREATE DATABASE postgres_test'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'postgres_test')\gexec
+SELECT 'CREATE DATABASE main'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'main')\gexec
+
+CREATE SCHEMA IF NOT EXISTS market;

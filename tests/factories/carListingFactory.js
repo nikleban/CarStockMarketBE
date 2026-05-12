@@ -74,7 +74,7 @@ export function carSpecificationsAttrs(overrides = {}) {
  * const listing = await createCarListing({ price: 5000 });
  * const listing = await createCarListing({ userId: existingUser.id, carModelId: existingModel.id });
  */
-export async function createCarListing(overrides = {}) {
+export async function createCarListing(overrides = {}, skipCarSpecifications = false) {
   const user = overrides.userId ? null : await createUser();
   const carModel = overrides.carModelId ? null : await createCarModel();
 
@@ -84,6 +84,8 @@ export async function createCarListing(overrides = {}) {
     carModelId: carModel?.id,
     ...overrides,
   });
+
+  if (skipCarSpecifications) return listing;
 
   await CarSpecifications.create({
     ...carSpecificationsAttrs(),

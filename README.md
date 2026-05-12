@@ -192,7 +192,7 @@ All protected routes require a valid `token` cookie (set automatically on login/
 | `photos`            | File(s) | Yes      | Up to 10 images                                                              |
 | `price`             | number  | Yes      | 100 – 5,000,000                                                              |
 | `kilowatts`         | number  | Yes      | Engine power in kW                                                           |
-| `fuelType`          | string  | Yes      | `diesel`, `petrol`, `electric`, `hybrid`                                     |
+| `fuel`              | string  | Yes      | `diesel`, `petrol`, `electric`, `hybrid`                                     |
 | `brandModel`        | string  | Yes      | Exact model name (must exist in DB)                                          |
 | `mileage`           | number  | No       | Max 2,000,000                                                                |
 | `registrationYear`  | number  | No       | 1886 – current year + 1                                                      |
@@ -245,17 +245,17 @@ All protected routes require a valid `token` cookie (set automatically on login/
 
 ## Testing
 
-> **First-time setup:** The `postgres_test` database is created automatically when the Docker container first starts. If you already have the volume from before, recreate it once:
+> **First-time setup:** The `main` database is created automatically when the Docker container first starts. If you already have the volume from before, recreate it once:
 >
 > ```bash
 > docker compose down -v && docker compose up
 > ```
 
-| Command                       | Description                        |
-| ----------------------------- | ---------------------------------- |
-| `pnpm test`                   | Run all tests                      |
-| `pnpm test -- tests/services` | Run tests in a specific folder     |
-| `pnpm test:coverage`          | Run all tests with coverage report |
+| Command                           | Description                        |
+| --------------------------------- | ---------------------------------- |
+| `pnpm test`                       | Run all tests                      |
+| `pnpm test -- tests/serviceTests` | Run tests in a specific folder     |
+| `pnpm test:coverage`              | Run all tests with coverage report |
 
 To open the HTML coverage report in the browser after running `pnpm test:coverage`:
 

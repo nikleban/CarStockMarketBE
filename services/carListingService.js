@@ -6,19 +6,24 @@ import User from '#/models/User.js';
 import CarSpecifications from '#/models/CarSpecifications.js';
 import sequelize from '#/config/db.js';
 import AppError from '#/errors/AppErrors.js';
+import {
+  CarModelNotFoundError,
+  MissingCarListingDataError,
+  CarListingAlreadyExists,
+  CarListingDoesntExists,
+} from '#/errors/index.js';
 
 import { buildWhereFiltersCarListings } from '#/utils/carListingUtils.js';
 
-export const getCarListingsService = async ({ query, user }) => {
+export const getCarListingsService = async ({ query, userId }) => {
   try {
+    if (!query || !userId) throw new MissingCarListingDataError();
+
     const page = Number(query.page) || 1;
     const limit = 10;
     const offset = (page - 1) * limit;
 
-    const userId = user.id;
-
-    const { whereCarListing, whereCarSpecifications, whereBrand, whereCarModel } =
-      buildWhereFiltersCarListings(query);
+    const { whereCarListing, _, whereBrand, whereCarModel } = buildWhereFiltersCarListings(query);
 
     const hasBrandFilter = Object.keys(whereBrand).length > 0;
     const hasModelFilter = Object.keys(whereCarModel).length > 0;
@@ -67,34 +72,30 @@ export const getCarListingsService = async ({ query, user }) => {
   }
 };
 
-export const createCarListingService = async ({ data, photos }) => {
+export const createCarListingService = async ({ data, photos, userId }) => {
   const transaction = await sequelize.transaction();
   try {
     const carModel = await CarModel.findOne({ where: { name: data.brandModel } });
 
-    if (!carModel) {
-      throw new AppError('Car model not found', 404);
-    }
+    if (!carModel) throw new CarModelNotFoundError();
 
     const carAlreadyExists = await CarSpecifications.findOne({
       where: { vinNumber: data.vinNumber },
     });
 
-    if (carAlreadyExists) {
-      throw new AppError('Car Already exists', 400);
-    }
+    if (carAlreadyExists) throw new CarListingAlreadyExists();
 
     const carListing = await CarListing.create(
       {
         price: data.price,
         kilowatts: data.kilowatts,
         photos: photos,
-        fuel: data.fuelType,
+        fuel: data.fuel,
         mileage: data.mileage,
         registrationYear: data.registrationYear,
         registrationMonth: data.registrationMonth,
         description: data.description,
-        userId: data.userId,
+        userId: userId,
         carModelId: carModel.id,
       },
       { transaction }
@@ -110,7 +111,7 @@ export const createCarListingService = async ({ data, photos }) => {
         motorVolumeFrom: data.motorVolumeFrom,
         motorVolumeTo: data.motorVolumeTo,
         vinNumber: data.vinNumber,
-        numOfOwners: data.numberOfOwners,
+        numOfOwners: data.numOfOwners,
         technicalValidity: data.technicalValidityDate,
         carListingId: carListing.id,
       },
@@ -118,6 +119,7 @@ export const createCarListingService = async ({ data, photos }) => {
     );
     await transaction.commit();
   } catch (error) {
+    await transaction.rollback();
     throw error;
   }
 };
@@ -126,9 +128,7 @@ export const getCarListingService = async ({ carListingId, userId }) => {
   try {
     const carListing = await CarListing.findByPk(carListingId);
 
-    if (!carListing) {
-      throw new AppError('Car Listing doesnt exist');
-    }
+    if (!carListing) throw new CarListingDoesntExists();
     const carSpecifications = await CarSpecifications.findOne({
       where: {
         carListingId: carListingId,
