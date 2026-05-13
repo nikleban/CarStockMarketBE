@@ -1,3 +1,0 @@
-api: ghcr.io/nikleban/carstockmarketbe:main
-frontend: ghcr.io/nikleban/carstockmarketfe:main
-evaluation: ghcr.io/nikleban/carstockmarketevaluation:main
