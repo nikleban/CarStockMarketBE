@@ -58,5 +58,5 @@ jobs:
           DB_PORT: 5433
           DB_NAME: main
           DB_USER: postgres
-          DB_PASS: postgres
+          DB_PASSWORD: postgres
         run: pnpm test

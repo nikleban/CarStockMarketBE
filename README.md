@@ -70,7 +70,7 @@ Create a `.env` file in the project root:
 ```env
 DB_NAME=carStockMarket
 DB_USER=postgres
-DB_PASS=yourpassword
+DB_PASSWORD=yourpassword
 DB_HOST=localhost
 PORT=5000
 JWT_SECRET=your_jwt_secret

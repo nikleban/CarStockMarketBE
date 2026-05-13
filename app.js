@@ -11,7 +11,7 @@ import evaluationService from "#/modules/evaluation/evaluation.js";
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173", // your frontend’s exact URL
+    origin: process.env.FE_URL, // your frontend’s exact URL
     credentials: true,
   }),
 );
