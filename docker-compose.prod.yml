@@ -22,7 +22,7 @@ services:
       - vrooom
 
   frontend:
-    image: ghcr.io/nikleban/carstockmarketfe:main
+    image: ghcr.io/nikleban/carstockmarketfe:master
     container_name: frontend
     env_file:
       - .env
