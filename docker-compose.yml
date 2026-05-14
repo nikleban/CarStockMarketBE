@@ -22,7 +22,9 @@ services:
         condition: service_healthy
 
   frontend:
-    build: ../CarStockMarketFE
+    build:
+      context: ../CarStockMarketFE
+      dockerfile: Dockerfile.dev
     container_name: frontend
     ports:
       - '5173:5173'

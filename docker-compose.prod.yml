@@ -1,6 +1,7 @@
 services:
   api:
     image: ghcr.io/nikleban/carstockmarketbe:main
+    pull_policy: always
     container_name: my-api
     environment:
       DB_HOST: db
@@ -23,6 +24,7 @@ services:
 
   frontend:
     image: ghcr.io/nikleban/carstockmarketfe:master
+    pull_policy: always
     container_name: frontend
     env_file:
       - .env
@@ -38,7 +40,7 @@ services:
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - /root/vrooom/docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
       interval: 5s
@@ -66,6 +68,7 @@ services:
 
   evaluation:
     image: ghcr.io/nikleban/carstockmarketevaluation:main
+    pull_policy: always
     container_name: evaluation
     environment:
       DB_HOST: db
