@@ -20,7 +20,26 @@ const MISSING_BRANDS_AND_MODELS = {
   ],
   Audi: ['A1', 'A2'],
   Toyota: ['Avensis', 'Verso-S', 'Proace', 'Aygo', 'Hilux', 'IQ'],
-  Renault: ['Scenic', 'Modus', 'Austral', 'Clio', 'Meganetechno', 'Twingo', 'Megane'],
+  Renault: [
+    'Scenic',
+    'Modus',
+    'Austral',
+    'Clio',
+    'Meganetechno',
+    'Twingo',
+    'Megane',
+    'Captur',
+    'Talisman',
+    'ZoeBose',
+    'LagunaElite',
+    'Espaced',
+    'R4',
+    'Koleos',
+    'SymbiozE',
+  ],
+  Peugeot: ['206', '3008', '5008', '504', '308'],
+  Ford: ['Galaxy', 'Mondeo', 'Puma', 'S-Max'],
+  'Mercedes-Benz': ['GLE-class'],
 };
 
 async function seedBrandsAndModels() {
