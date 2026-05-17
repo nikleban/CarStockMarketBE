@@ -3,7 +3,7 @@ import CarModel from '#/models/CarModel.js';
 import { createRequire } from 'module';
 
 const MISSING_BRANDS_AND_MODELS = {
-  BMW: ['1 Series', '2 Series', '4 Series', '7 Series', '8 Series'],
+  BMW: ['1 Series', '2 Series', '4 Series', '7 Series', '8 Series', 'Z4Z4'],
   Volkswagen: [
     'up!',
     'Touran',
@@ -16,9 +16,11 @@ const MISSING_BRANDS_AND_MODELS = {
     'T-Cross',
     'Polo',
     'Amarok',
+    'Multivan',
   ],
   Audi: ['A1', 'A2'],
-  Toyota: ['Avensis', 'Verso-S'],
+  Toyota: ['Avensis', 'Verso-S', 'Proace', 'Aygo', 'Hilux', 'IQ'],
+  Renault: ['Scenic', 'Modus', 'Austral', 'Clio', 'Meganetechno', 'Twingo', 'Megane'],
 };
 
 async function seedBrandsAndModels() {
