@@ -34,16 +34,18 @@ const MISSING_BRANDS_AND_MODELS = {
     'ZoeBose',
     'LagunaElite',
     'LagunaPrivil',
+    'LagunaExpression',
     'Espaced',
     'R4',
     'Koleos',
     'SymbiozE',
     'Kadjar',
     'Kangoo',
+    'Fluence',
   ],
-  Peugeot: ['206', '3008', '5008', '504', '308'],
-  Ford: ['Galaxy', 'Mondeo', 'Puma', 'S-Max'],
-  'Mercedes-Benz': ['GLE-class'],
+  Peugeot: ['206', '206', '3008', '5008', '504', '308', '307', '208', '107', 'Partner', 'Rifter'],
+  Ford: ['Galaxy', 'Mondeo', 'Puma', 'S-Max', 'Kuga', 'Tourneo', 'Grand'],
+  'Mercedes-Benz': ['GLE-class', 'Vito'],
 };
 
 async function seedBrandsAndModels() {
