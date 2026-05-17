@@ -2,3 +2,4 @@ node_modules
 coverage
 uploads
 pnpm-lock.yaml
+seeders/all-vehicles-model.json
