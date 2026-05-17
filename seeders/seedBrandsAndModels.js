@@ -4,6 +4,7 @@ import { createRequire } from 'module';
 
 const MISSING_BRANDS_AND_MODELS = {
   BMW: ['1 Series', '2 Series', '4 Series', '7 Series', '8 Series'],
+  Volkswagen: ['up!', 'Touran', 'Tayron', 'Transporter', 'T-Roc'],
 };
 
 async function seedBrandsAndModels() {
