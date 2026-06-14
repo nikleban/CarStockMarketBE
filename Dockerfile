@@ -1,8 +1,9 @@
 FROM node:24
 ENV HUSKY=0
+ENV CI=true
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml .npmrc ./
+COPY package.json pnpm-lock.yaml .npmrc pnpm.yaml ./
 
 RUN npm install -g pnpm
 

@@ -1,0 +1,5 @@
+confirmModulesPurge: false
+onlyBuiltDependencies:
+  - bcrypt
+  - msgpackr-extract
+  - unrs-resolver

@@ -51,14 +51,6 @@
     "nodemon": "^3.1.10",
     "prettier": "3.7.4"
   },
-  "pnpm": {
-    "ignoredBuiltDependencies": [],
-    "onlyBuiltDependencies": [
-      "bcrypt",
-      "msgpackr-extract",
-      "unrs-resolver"
-    ]
-  },
   "lint-staged": {
     "!(coverage|node_modules|uploads)/**/*.js": [
       "eslint --fix",

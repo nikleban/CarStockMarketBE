@@ -3,6 +3,7 @@ import {
   createCarListingService,
   getCarListingService,
   getSellerDataService,
+  getFeaturedCarListingsService,
 } from '#/services/carListingService.js';
 
 export const createCarListing = async (req, res, next) => {
@@ -41,6 +42,15 @@ export const getCarListing = async (req, res, next) => {
 export const getSellerData = async (req, res, next) => {
   try {
     const sellerData = await getSellerDataService({ carListingId: req.params.id });
+    return res.status(200).json(sellerData);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const getFeaturedCarListings = async (req, res, next) => {
+  try {
+    const sellerData = await getFeaturedCarListingsService({ userId: req.user.id });
     return res.status(200).json(sellerData);
   } catch (error) {
     return next(error);

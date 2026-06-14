@@ -190,3 +190,39 @@ export const getSellerDataService = async ({ carListingId }) => {
     throw error;
   }
 };
+
+export const getFeaturedCarListingsService = async ({ userId }) => {
+  try {
+    const carListings = await CarListing.findAll({
+      limit: 8,
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: CarModel,
+          attributes: ['name'],
+          include: [
+            {
+              model: Brand,
+              attributes: ['name'],
+            },
+          ],
+        },
+        {
+          model: CarListingLike,
+          as: 'liked',
+          where: { userId: userId },
+          required: false,
+        },
+      ],
+    });
+
+    const formatted = carListings.map((listing) => {
+      const json = listing.toJSON();
+      return { ...json, liked: json.liked?.length > 0 };
+    });
+
+    return formatted;
+  } catch (error) {
+    throw error;
+  }
+};
