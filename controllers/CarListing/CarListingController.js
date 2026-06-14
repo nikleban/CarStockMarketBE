@@ -20,7 +20,8 @@ export const createCarListing = async (req, res, next) => {
 
 export const getCarListings = async (req, res, next) => {
   try {
-    const carListings = await getCarListingsService({ query: req.query, userId: req.user.id });
+    const userId = req.user?.id ?? null;
+    const carListings = await getCarListingsService({ query: req.query, userId: userId });
     return res.status(200).json(carListings);
   } catch (error) {
     return next(error);
@@ -29,9 +30,10 @@ export const getCarListings = async (req, res, next) => {
 
 export const getCarListing = async (req, res, next) => {
   try {
+    const userId = req.user?.id ?? null;
     const carListing = await getCarListingService({
       carListingId: req.params.id,
-      userId: req.user.id,
+      userId: userId,
     });
     return res.status(200).json(carListing);
   } catch (error) {
@@ -50,7 +52,8 @@ export const getSellerData = async (req, res, next) => {
 
 export const getFeaturedCarListings = async (req, res, next) => {
   try {
-    const sellerData = await getFeaturedCarListingsService({ userId: req.user.id });
+    const userId = req.user?.id ?? null;
+    const sellerData = await getFeaturedCarListingsService({ userId: userId });
     return res.status(200).json(sellerData);
   } catch (error) {
     return next(error);

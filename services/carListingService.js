@@ -17,7 +17,7 @@ import { buildWhereFiltersCarListings } from '#/utils/carListingUtils.js';
 
 export const getCarListingsService = async ({ query, userId }) => {
   try {
-    if (!query || !userId) throw new MissingCarListingDataError();
+    if (!query) throw new MissingCarListingDataError();
 
     const page = Number(query.page) || 1;
     const limit = 10;
@@ -48,12 +48,9 @@ export const getCarListingsService = async ({ query, userId }) => {
             },
           ],
         },
-        {
-          model: CarListingLike,
-          as: 'liked',
-          where: { userId: userId },
-          required: false,
-        },
+        ...(userId
+          ? [{ model: CarListingLike, as: 'liked', where: { userId }, required: false }]
+          : []),
       ],
       where: whereCarListing,
     });
@@ -138,10 +135,9 @@ export const getCarListingService = async ({ carListingId, userId }) => {
     if (!carSpecifications) {
       throw new AppError('Car specifications dont exist');
     }
-
-    const isLiked = await CarListingLike.count({
-      where: { userId: userId, carListingId: carListing.id },
-    });
+    const isLiked = userId
+      ? await CarListingLike.count({ where: { userId, carListingId: carListing.id } })
+      : 0;
     const carData = {
       ...carListing.get(),
       specifications: {
@@ -207,12 +203,9 @@ export const getFeaturedCarListingsService = async ({ userId }) => {
             },
           ],
         },
-        {
-          model: CarListingLike,
-          as: 'liked',
-          where: { userId: userId },
-          required: false,
-        },
+        ...(userId
+          ? [{ model: CarListingLike, as: 'liked', where: { userId }, required: false }]
+          : []),
       ],
     });
 

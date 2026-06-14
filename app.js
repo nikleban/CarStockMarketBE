@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import userRoutes from "#/routes/userRoutes.js";
 import carRoutes from "#/routes/carRoutes.js";
 import listingRoutes from "#/routes/listingRoutes.js";
-import protect from "#/middlewares/AuthMiddleware.js";
+import protect, { optionalAuth } from "#/middlewares/AuthMiddleware.js";
 import evaluationService from "#/modules/evaluation/evaluation.js";
 
 const app = express();
@@ -21,8 +21,8 @@ app.use(cookieParser());
 app.get("/", (req, res) => res.send("API running"));
 
 app.use("/api/users", userRoutes);
-app.use("/api/cars", protect, carRoutes);
-app.use("/api/listings", protect, listingRoutes);
+app.use("/api/cars", optionalAuth, carRoutes);
+app.use("/api/listings", listingRoutes);
 app.use("/api/evaluate", protect, evaluationService)
 app.use("/uploads", express.static("uploads"));
 app.get("/", (req, res) => res.send("API running"));
