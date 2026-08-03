@@ -132,9 +132,7 @@ export const getCarListingService = async ({ carListingId, userId }) => {
       },
     });
 
-    if (!carSpecifications) {
-      throw new AppError('Car specifications dont exist');
-    }
+    if (!carSpecifications) throw new AppError('Car specifications dont exist');
     const isLiked = userId
       ? await CarListingLike.count({ where: { userId, carListingId: carListing.id } })
       : 0;
