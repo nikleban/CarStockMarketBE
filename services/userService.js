@@ -1,4 +1,5 @@
 import User from '#/models/User.js';
+import UserSetting from '#/models/UserSetting.js';
 import CarListing from '#/models/CarListing.js';
 import CarListingLike from '#/models/CarListingLike.js';
 import CarModel from '#/models/CarModel.js';
@@ -65,11 +66,13 @@ export const registerUserService = async (
       password: hashedPassword,
     });
 
+    const settings = await UserSetting.create({ userId: user.id, language: 'en' });
+
     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
       expiresIn: '7d',
     });
 
-    return { user, token };
+    return { user, token, settings };
   } catch (error) {
     throw error;
   }
@@ -98,7 +101,12 @@ export const loginUserService = async ({ email, password }) => {
 
     await emailQueue.add('login', { type: 'login', to: user.email, userName: user.firstName });
 
-    return { user, token };
+    const [settings] = await UserSetting.findOrCreate({
+      where: { userId: user.id },
+      defaults: { language: 'en' },
+    });
+
+    return { user, token, settings };
   } catch (error) {
     throw error;
   }
@@ -179,6 +187,29 @@ export const getUserCarListingsService = async ({ userId }) => {
     throw error;
   }
 };
+export const getUserSettingService = async ({ userId }) => {
+  try {
+    const [settings] = await UserSetting.findOrCreate({
+      where: { userId },
+      defaults: { language: 'en' },
+    });
+    return settings;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateUserSettingService = async ({ userId, language }) => {
+  try {
+    const settings = await UserSetting.findOne({ where: { userId } });
+    if (language !== undefined) settings.language = language;
+    await settings.save();
+    return settings;
+  } catch (error) {
+    throw error;
+  }
+};
+
 //TODO: check if good
 export const getUserLikedCarListingsService = async ({ userId }) => {
   try {

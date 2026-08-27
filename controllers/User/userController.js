@@ -1,4 +1,5 @@
 import User from '#/models/User.js';
+import UserSetting from '#/models/UserSetting.js';
 import {
   sendVerificationCodeService,
   loginUserService,
@@ -6,6 +7,8 @@ import {
   getUserService,
   getUserCarListingsService,
   getUserLikedCarListingsService,
+  getUserSettingService,
+  updateUserSettingService,
 } from '#/services/userService.js';
 
 export const sendVerificationCode = async (req, res, next) => {
@@ -24,7 +27,7 @@ export const sendVerificationCode = async (req, res, next) => {
 export const registerUser = async (req, res, next) => {
   const { firstName, lastName, email, telephone, password, verificationCode } = req.body;
   try {
-    const { user, token } = await registerUserService(
+    const { user, token, settings } = await registerUserService(
       firstName,
       lastName,
       email,
@@ -46,6 +49,9 @@ export const registerUser = async (req, res, next) => {
         email: user.email,
         telephone: user.telephone,
       },
+      settings: {
+        language: settings.language,
+      },
     });
   } catch (error) {
     next(error);
@@ -55,7 +61,7 @@ export const registerUser = async (req, res, next) => {
 export const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const { user, token } = await loginUserService({ email: email, password: password });
+    const { user, token, settings } = await loginUserService({ email: email, password: password });
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -71,27 +77,40 @@ export const loginUser = async (req, res, next) => {
         email: user.email,
         telephone: user.telephone,
       },
+      settings: {
+        language: settings.language,
+      },
     });
   } catch (error) {
     next(error);
   }
 };
 
-export const getUserWithToken = async (req, res) => {
-  const userEmail = req.user.email;
+export const getUserWithToken = async (req, res, next) => {
+  const { id: userId, email: userEmail } = req.user;
+  try {
+    const user = await User.findOne({ where: { email: userEmail } });
+    const [settings] = await UserSetting.findOrCreate({
+      where: { userId },
+      defaults: { language: 'en' },
+    });
 
-  const user = await User.findOne({ where: { email: userEmail } });
-
-  return res.status(201).json({
-    message: 'User loged in successfully',
-    user: {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      telephone: user.telephone,
-    },
-  });
+    return res.status(200).json({
+      message: 'User loged in successfully',
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        telephone: user.telephone,
+      },
+      settings: {
+        language: settings.language,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const logoutUser = async (req, res) => {
@@ -139,6 +158,27 @@ export const getUserLikedCarListings = async (req, res, next) => {
   try {
     const likedCarListings = await getUserLikedCarListingsService({ userId: userId });
     return res.status(201).json(likedCarListings);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserSetting = async (req, res, next) => {
+  const userId = req.user.id;
+  try {
+    const settings = await getUserSettingService({ userId });
+    return res.status(200).json({ language: settings.language });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserSetting = async (req, res, next) => {
+  const userId = req.user.id;
+  const { language } = req.body;
+  try {
+    const settings = await updateUserSettingService({ userId, language });
+    return res.status(200).json({ language: settings.language });
   } catch (error) {
     next(error);
   }

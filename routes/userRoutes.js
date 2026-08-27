@@ -7,6 +7,8 @@ import {
   getUser,
   getUserCarListings,
   getUserLikedCarListings,
+  getUserSetting,
+  updateUserSetting,
 } from '#/controllers/User/userController.js';
 import { logoutUser } from '#/controllers/User/userController.js';
 
@@ -20,5 +22,7 @@ router.post('/logout', protect, logoutUser);
 router.get('/user/:id', protect, getUser);
 router.get('/:id/carListings', protect, getUserCarListings);
 router.get('/:id/likedCarListings', protect, getUserLikedCarListings);
+router.get('/settings', protect, getUserSetting);
+router.patch('/settings', protect, updateUserSetting);
 
 export default router;
